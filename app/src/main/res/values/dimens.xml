@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="elevation">3dp</dimen>
+    <dimen name="paddingCardView">10dp</dimen>
+    <dimen name="CornerRadiusCardView">5dp</dimen>
+    <dimen name="ElevationCardView">15dp</dimen>
+    <dimen name="marginCardView">10dp</dimen>
+</resources>
