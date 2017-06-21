@@ -1,23 +1,26 @@
 package by.insight.travelersjournal.model;
 
 
-import java.util.Date;
-
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
-import io.realm.annotations.Required;
+
 
 
 public class Event extends RealmObject {
 
     @PrimaryKey
     private String id;
-    @Required
+
     private String title;
-    @Required
+
     private String descriptions;
 
+    private Long date;
+
+    private String time;
+
+    private RealmList<ImageEvent> imageEvent;
 
     public String getId() {
         return id;
@@ -43,4 +46,27 @@ public class Event extends RealmObject {
         this.descriptions = descriptions;
     }
 
+    public Long getDate() {
+        return date;
+    }
+
+    public void setDate(Long date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public RealmList<ImageEvent> getImageEvent() {
+        return imageEvent;
+    }
+
+    public void setImageEvent(RealmList<ImageEvent> imageEvent) {
+        this.imageEvent = imageEvent;
+    }
 }

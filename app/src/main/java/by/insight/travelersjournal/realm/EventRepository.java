@@ -1,12 +1,10 @@
 package by.insight.travelersjournal.realm;
 
-import android.util.Log;
 
 import java.util.UUID;
 
 import by.insight.travelersjournal.model.Event;
 import by.insight.travelersjournal.model.Travel;
-import by.insight.travelersjournal.app.SimpleRealmApp;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
@@ -15,9 +13,8 @@ import io.realm.RealmResults;
 
 public class EventRepository implements IEventRepository {
 
-
     @Override
-    public synchronized void addEvent(final Event event, OnSaveEventCallback callback) {
+    public void addEvent(final Event event, OnSaveEventCallback callback) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -25,6 +22,8 @@ public class EventRepository implements IEventRepository {
                 Event realmEvent = realm.createObject(Event.class, UUID.randomUUID().toString());
                 realmEvent.setTitle(event.getTitle());
                 realmEvent.setDescriptions(event.getDescriptions());
+                realmEvent.setDate(event.getDate());
+                realmEvent.setTime(event.getTime());
                 realm.insertOrUpdate(realmEvent);
             }
         });
@@ -33,7 +32,7 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
-    public synchronized void addEventByTravelId(final Event event, final String travelId, OnSaveEventCallback callback) {
+    public void addEventByTravelId(final Event event, final String travelId, OnSaveEventCallback callback) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -41,6 +40,8 @@ public class EventRepository implements IEventRepository {
                 Event realmEvent = realm.createObject(Event.class, UUID.randomUUID().toString());
                 realmEvent.setTitle(event.getTitle());
                 realmEvent.setDescriptions(event.getDescriptions());
+                realmEvent.setDate(event.getDate());
+                realmEvent.setTime(event.getTime());
                 Travel travel = realm.where(Travel.class).equalTo(RealmTable.ID, travelId).findFirst();
                 travel.getEvents().add(realmEvent);
                 realm.insertOrUpdate(realmEvent);
@@ -52,7 +53,7 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
-    public synchronized void deleteEventById(final String id, OnDeleteEventCallback callback) {
+    public void deleteEventById(final String id, OnDeleteEventCallback callback) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -66,7 +67,7 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
-    public synchronized void deleteEventByPosition(final int position, OnDeleteEventCallback callback) {
+    public void deleteEventByPosition(final int position, OnDeleteEventCallback callback) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -81,7 +82,7 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
-    public synchronized void getAllEvents(OnGetAllEventsCallback callback) {
+    public void getAllEvents(OnGetAllEventsCallback callback) {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Event> results = realm.where(Event.class).findAll();
 
@@ -90,7 +91,7 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
-    public synchronized void getAllEventsByTravelId(String id, OnGetEventsCallback callback) {
+    public void getAllEventsByTravelId(String id, OnGetEventsCallback callback) {
         Realm realm = Realm.getDefaultInstance();
 
         Travel travel = realm.where(Travel.class).equalTo(RealmTable.ID, id).findFirst();
@@ -102,7 +103,7 @@ public class EventRepository implements IEventRepository {
     }
 
     @Override
-    public synchronized void getEventById(final String id, OnGetEventByIdCallback callback) {
+    public void getEventById(final String id, OnGetEventByIdCallback callback) {
         Realm realm = Realm.getDefaultInstance();
         Event event = realm.where(Event.class).equalTo(RealmTable.ID, id).findFirst();
         if (callback != null)

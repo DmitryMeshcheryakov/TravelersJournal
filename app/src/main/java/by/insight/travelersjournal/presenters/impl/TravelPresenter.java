@@ -1,7 +1,5 @@
 package by.insight.travelersjournal.presenters.impl;
 
-import android.util.Log;
-
 import by.insight.travelersjournal.model.Travel;
 import by.insight.travelersjournal.presenters.ITravelPresenter;
 import by.insight.travelersjournal.realm.ITravelRepository;
@@ -15,7 +13,7 @@ public class TravelPresenter implements ITravelPresenter {
     private RecyclerViewTravelFragment mRecyclerViewTravelFragment;
     private TravelsActivity mTravelsActivity;
 
-    private ITravelRepository repository;
+    private ITravelRepository mRepository;
 
 
     private ITravelRepository.OnGetAllTravelCallback getAllTravelCallback;
@@ -25,38 +23,38 @@ public class TravelPresenter implements ITravelPresenter {
 
     public TravelPresenter(RecyclerViewTravelFragment view) {
         this.mRecyclerViewTravelFragment = view;
-        repository = new TravelRepository();
+        mRepository = new TravelRepository();
     }
     public TravelPresenter(TravelsActivity view)
     {
         this.mTravelsActivity = view;
-        repository = new TravelRepository();
+        mRepository = new TravelRepository();
     }
 
     @Override
     public void getAllTravels() {
-        repository.getAllTravels(getAllTravelCallback);
+        mRepository.getAllTravels(getAllTravelCallback);
     }
 
     @Override
-    public void addTravel(String travelName, String travelDescription) {
-        Travel travel = new Travel(travelName, travelDescription);
-        repository.addTravel(travel, addTravelCallback);
+    public void addTravel(String travelName, String travelDescription, String travelImagePath) {
+        Travel travel = new Travel(travelName, travelDescription, travelImagePath);
+        mRepository.addTravel(travel, addTravelCallback);
     }
 
     @Override
     public void getTravelById(String id) {
-        repository.getTravelById(id, getSpecialTravelCallback);
+        mRepository.getTravelById(id, getSpecialTravelCallback);
     }
 
     @Override
     public void deleteTravel(int position) {
-        repository.deleteTravelByPosition(position, deleteTravelCallback);
+        mRepository.deleteTravelByPosition(position, deleteTravelCallback);
     }
 
     @Override
     public void deleteTravelById(String Id) {
-        repository.deleteTravelById(Id, deleteTravelCallback);
+        mRepository.deleteTravelById(Id, deleteTravelCallback);
     }
 
     @Override

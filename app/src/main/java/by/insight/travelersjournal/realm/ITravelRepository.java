@@ -7,21 +7,25 @@ import io.realm.RealmResults;
 public interface ITravelRepository extends IBaseRepository {
     interface OnAddTravelCallback {
         void onSuccess();
+
         void onError(String message);
     }
 
     interface OnGetAllTravelCallback {
         void onSuccess(RealmResults<Travel> travel);
+
         void onError(String message);
     }
 
     interface OnGetTravelByIdCallback {
         void onSuccess(Travel travel);
+
         void onError(String message);
     }
 
     interface OnDeleteTravelCallback {
         void onSuccess();
+
         void onError(String message);
     }
 

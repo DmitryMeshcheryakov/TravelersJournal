@@ -1,21 +1,24 @@
 package by.insight.travelersjournal.realm;
 
 
-
 public interface RealmTable {
     String ID = "id";
 
-    interface Travel
-    {
+    interface Travel {
         String TITLE = "title";
-        String DESCRIPTION = "description";
+        String DESCRIPTIONS = "descriptions";
+        String IMAGE_PATH = "image_path";
     }
 
-    interface Event
-    {
+    interface Event {
         String TITLE = "title";
-        String DESCRIPTION = "description";
-//        String DATE = "date";
-//        String TIME = "time";
+        String DESCRIPTIONS = "descriptions";
+        String DATE = "date";
+        String TIME = "time";
+    }
+
+    interface ImageEvent
+    {
+        String IMAGE_PATH = "image_path";
     }
 }

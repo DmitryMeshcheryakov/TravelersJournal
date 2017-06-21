@@ -3,9 +3,7 @@ package by.insight.travelersjournal.model;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
 import io.realm.annotations.Required;
 
 
@@ -17,14 +15,17 @@ public class Travel extends RealmObject {
 
     private String descriptions;
 
+    private String imagePath;
+
     private RealmList<Event> events;
 
     public Travel() {
     }
 
-    public Travel(String title, String descriptions) {
+    public Travel(String title, String descriptions, String imagePath) {
         this.title = title;
         this.descriptions = descriptions;
+        this.imagePath = imagePath;
     }
 
     public String getId() {
@@ -58,4 +59,13 @@ public class Travel extends RealmObject {
     public void setEvents(RealmList<Event> events) {
         this.events = events;
     }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
 }

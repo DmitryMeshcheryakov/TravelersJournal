@@ -13,11 +13,13 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 
 
-
 public class EventPresenter implements IEventPresenter {
 
     private EventsActivity mEventsActivity;
     private RecyclerViewEventFragment mRecyclerViewEventFragment;
+
+    private IEventRepository eventRepository;
+    private ITravelRepository travelRepository;
 
     private IEventRepository.OnDeleteEventCallback onDeleteEventCallback;
     private IEventRepository.OnSaveEventCallback onSaveEventCallback;
@@ -27,8 +29,7 @@ public class EventPresenter implements IEventPresenter {
     private ITravelRepository.OnGetTravelByIdCallback onGetTravelByIdCallback;
 
 
-    private IEventRepository eventRepository;
-    private ITravelRepository travelRepository;
+
 
     public EventPresenter(EventsActivity view) {
         this.mEventsActivity = view;
@@ -36,13 +37,11 @@ public class EventPresenter implements IEventPresenter {
         travelRepository = new TravelRepository();
     }
 
-    public EventPresenter(RecyclerViewEventFragment view)
-    {
+    public EventPresenter(RecyclerViewEventFragment view) {
         this.mRecyclerViewEventFragment = view;
         eventRepository = new EventRepository();
         travelRepository = new TravelRepository();
     }
-
 
 
     @Override
@@ -60,8 +59,8 @@ public class EventPresenter implements IEventPresenter {
     }
 
     @Override
-    public void deleteEventById(String studentId) {
-        eventRepository.deleteEventById(studentId, onDeleteEventCallback);
+    public void deleteEventById(String eventId) {
+        eventRepository.deleteEventById(eventId, onDeleteEventCallback);
     }
 
     @Override

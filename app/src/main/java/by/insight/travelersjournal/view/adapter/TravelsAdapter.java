@@ -1,9 +1,16 @@
 package by.insight.travelersjournal.view.adapter;
+
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.insight.travelersjournal.R;
@@ -11,13 +18,20 @@ import by.insight.travelersjournal.model.Travel;
 import io.realm.RealmResults;
 
 
+public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsViewHolder> {
 
-public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsViewHolder>  {
-    private OnItemClickListener onItemClickListener;
+    private OnItemTravelClickListener onItemClickListener;
     private RealmResults<Travel> mTravels;
+    private Context _context;
+    private RequestOptions mRequestOptions;
 
+    public interface OnItemTravelClickListener {
+        void onItemClick(String id);
+    }
 
-    public TravelsAdapter(RealmResults<Travel> travels) {
+    public TravelsAdapter(RealmResults<Travel> travels, Context context) {
+
+        this._context = context;
         this.mTravels = travels;
 
     }
@@ -25,6 +39,7 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
     @Override
     public TravelsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_travels, parent, false);
+        mRequestOptions = new RequestOptions().optionalCenterInside().fitCenter();
         return new TravelsViewHolder(view);
     }
 
@@ -32,10 +47,17 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
     public void onBindViewHolder(final TravelsViewHolder holder, int position) {
 
 
+        holder.mTitleTravelTextView.setText(mTravels
+                .get(position)
+                .getTitle());
+        holder.mTravelDescriptionsTextView.setText(mTravels
+                .get(position)
+                .getDescriptions());
+        Glide.with(_context)
+                .load(mTravels.get(position).getImagePath())
+                .apply(mRequestOptions)
+                .into(holder.mImageTravel);
 
-
-        holder.tvTravelTitle.setText(mTravels.get(position).getTitle());
-        holder.tvTravelDescriptions.setText(mTravels.get(position).getDescriptions());
     }
 
     @Override
@@ -43,12 +65,14 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
         return mTravels.size();
     }
 
-    public class TravelsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class TravelsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.titleTravelsTextView)
-        TextView tvTravelTitle;
-        @BindView(R.id.descriptionTravelsTextView)
-         TextView tvTravelDescriptions;
+        @BindView(R.id.title_travel_text_view)
+        TextView mTitleTravelTextView;
+        @BindView(R.id.description_travel_text_view)
+        TextView mTravelDescriptionsTextView;
+        @BindView(R.id.image_travel)
+        ImageView mImageTravel;
 
         public TravelsViewHolder(View itemView) {
             super(itemView);
@@ -64,11 +88,8 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
         }
     }
 
-    public interface OnItemClickListener{
-        void onItemClick(String id);
-    }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    public void setOnItemTravelClickListener(OnItemTravelClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 }

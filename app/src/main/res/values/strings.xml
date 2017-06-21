@@ -4,4 +4,12 @@
     <string name="title_activity_events">EventsActivity</string>
     <string name="travels">Travels</string>
     <string name="events">Events</string>
+    <string name="max_select_prompt">Select the maximum selection</string>
+    <string name="media_type_prompt">Select the media type filter</string>
+    <string name="permissions_gallery">This app needs access to your gallery so you can take add pictures.</string>
+    <string name="permissions_camera">This app needs access to your camera so you can take add photo.</string>
+    <string name="text_hint_title">Title</string>
+    <string name="text_hint_read">Read</string>
+    <string name="text_hint_write">Write</string>
+    <string name="name_travel">Name Travel</string>
 </resources>

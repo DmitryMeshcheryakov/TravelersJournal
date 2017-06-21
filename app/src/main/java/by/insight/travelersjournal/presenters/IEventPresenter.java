@@ -2,10 +2,6 @@ package by.insight.travelersjournal.presenters;
 
 import by.insight.travelersjournal.model.Event;
 
-/**
- * Created by Dmitry on 21.05.2017.
- */
-
 public interface IEventPresenter extends IBasePresenter {
     void addEvent(Event event);
 
