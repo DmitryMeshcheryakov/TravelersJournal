@@ -50,6 +50,13 @@
             android:layout_margin="10dp"
             android:drawableBottom="@drawable/ic_add_to_photos_24dp"/>
 
+        <ImageView
+            android:id="@+id/image_item_travel"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="fitCenter"/>
+
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/save_travel_FAB"
             android:layout_width="wrap_content"

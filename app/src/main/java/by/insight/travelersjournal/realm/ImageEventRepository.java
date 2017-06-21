@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import by.insight.travelersjournal.model.Event;
 import by.insight.travelersjournal.model.ImageEvent;
-import by.insight.travelersjournal.model.Travel;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;

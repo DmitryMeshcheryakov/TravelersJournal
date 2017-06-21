@@ -11,6 +11,10 @@ import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,11 @@ public class AddEditTravelFragment extends BaseFragment {
     @BindView(R.id.save_travel_FAB)
     FloatingActionButton mSaveTravelFAB;
 
+    @BindView(R.id.image_item_travel)
+    ImageView mImageItemTravel;
+
+    private RequestOptions mRequestOptions;
+
     private OnAddTravelClickListener mListener;
     private Unbinder mUnbinder;
     private String mPathImage;
@@ -58,6 +67,7 @@ public class AddEditTravelFragment extends BaseFragment {
         mUnbinder = ButterKnife.bind(this, view);
         textWatcher();
         hideOrShowFAB(textInputConvertString(mTitleTravelTextInputLayout), mSaveTravelFAB);
+        mRequestOptions = new RequestOptions().optionalCenterInside().fitCenter();
         return view;
 
     }
@@ -107,6 +117,10 @@ public class AddEditTravelFragment extends BaseFragment {
         switch (requestCode) {
             case AppConstant.REQEST_PHOTO_CODE: {
                 mPathImage = getRealPathFromUri(getContext(), data.getData());
+
+                Glide.with(getContext())
+                        .load(mPathImage)
+                        .into(mImageItemTravel);
             }
         }
     }
