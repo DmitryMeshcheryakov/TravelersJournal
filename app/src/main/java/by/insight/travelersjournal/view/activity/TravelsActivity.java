@@ -2,6 +2,8 @@ package by.insight.travelersjournal.view.activity;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import by.insight.travelersjournal.AppConstant;
 import by.insight.travelersjournal.R;

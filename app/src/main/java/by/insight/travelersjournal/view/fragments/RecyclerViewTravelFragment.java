@@ -3,6 +3,7 @@ package by.insight.travelersjournal.view.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -142,4 +143,10 @@ public class RecyclerViewTravelFragment extends BaseFragment {
         mRealm = null;
     }
 
+    @Override
+    public void onDestroy() {
+        System.runFinalization();
+        System.exit(0);
+        super.onDestroy();
+    }
 }
