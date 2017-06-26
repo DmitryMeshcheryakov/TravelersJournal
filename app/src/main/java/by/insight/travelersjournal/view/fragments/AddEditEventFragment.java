@@ -7,10 +7,18 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -21,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.UUID;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,19 +37,20 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import by.insight.travelersjournal.AppConstant;
 import by.insight.travelersjournal.R;
+import by.insight.travelersjournal.database.UtilRealm;
 import by.insight.travelersjournal.model.Event;
 import by.insight.travelersjournal.model.ImageEvent;
 import by.insight.travelersjournal.tools.UtilsValidate;
 import by.insight.travelersjournal.view.adapter.EventViewPagerAdapter;
-import by.insight.travelersjournal.view.adapter.EventsAdapter;
 import by.insight.travelersjournal.view.fragments.base.BaseFragment;
+import by.insight.travelersjournal.view.fragments.dialog_fragment.DatePickerDialogFragment;
+import by.insight.travelersjournal.view.fragments.dialog_fragment.TimePickerDialogFragment;
 import io.realm.RealmList;
 
 import static by.insight.travelersjournal.tools.DateFormatter.convertTimeToString;
 import static by.insight.travelersjournal.tools.DialogFragmentUtils.getInstanceDialogFragment;
 import static by.insight.travelersjournal.tools.IntentUtils.addImagesFromGallery;
 import static by.insight.travelersjournal.tools.IntentUtils.addPhotoFromCamera;
-import static by.insight.travelersjournal.tools.ItemUtils.saveEvent;
 import static by.insight.travelersjournal.tools.TextUtils.arrayDateKey;
 import static by.insight.travelersjournal.tools.TextUtils.textInputConvertString;
 import static by.insight.travelersjournal.tools.TextUtils.textViewConvertString;
@@ -75,32 +84,70 @@ public class AddEditEventFragment extends BaseFragment {
     @BindView(R.id.event_ViewPager)
     ViewPager mEventViewPager;
 
+    @BindView(R.id.add_edit_event_toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.add_edit_event_collapsing)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
     private boolean isTimeVal = false;
 
     private RealmList<ImageEvent> mImageEvents = new RealmList<>();
 
+    private List<String> imagePath = new ArrayList<>();
+
     private Long mDate = new Date().getTime();
 
     private Unbinder mUnbinder;
-    private OnAddEventClickListener mEventListener;
 
+    private String mEventId;
+
+    private UtilRealm mUtilRealm;
+
+    private OnAddEventClickListener mAddEventListener;
 
     public interface OnAddEventClickListener {
-        void onAddEventClickListener(Event event);
-
+        void onAddEventClickListener(String title, String descriptions, Long date, String time, RealmList<ImageEvent> imagePath);
     }
 
-    public void setEventListener(OnAddEventClickListener listener) {
-        this.mEventListener = listener;
+    public void setAddEventClickListener(OnAddEventClickListener listener) {
+        this.mAddEventListener = listener;
+    }
+
+    private OnEditEventClickListener mEditEventClickListener;
+
+    public interface OnEditEventClickListener {
+        void onEditEventClickListener(String id, String title, String descriptions, Long date, String time, RealmList<ImageEvent> imagePath);
+    }
+
+    public void setEditEventClickListener(OnEditEventClickListener listener) {
+        this.mEditEventClickListener = listener;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_edit_event, container, false);
+        View view = inflater.inflate(R.layout.add_edit_event_fragment, container, false);
+        setHasOptionsMenu(true);
         mUnbinder = ButterKnife.bind(this, view);
-        getCurrentDateAndTime(mDate);
+        init();
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            mEventId = bundle.getString(AppConstant.KEY_EVENT_ID);
+            if (mEventId != null) {
+                showEvent(mEventId);
+            }
+        }
         return view;
 
+    }
+
+    private void init() {
+        mUtilRealm = new UtilRealm();
+        mCollapsingToolbarLayout.setTitle(" ");
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        getCurrentDateAndTime(mDate);
     }
 
 
@@ -122,28 +169,36 @@ public class AddEditEventFragment extends BaseFragment {
 
     @OnClick(R.id.save_event_FAB)
     public void onClickSaveEvent() {
-        if (UtilsValidate.isInfoValidate(mTitleEventTextInputLayout, mDescriptionsEventTextInputLayout)) {
+        if (UtilsValidate.isInfoValidate(mTitleEventTextInputLayout)) {
 
-            mEventListener.onAddEventClickListener(saveEvent(
-                    textInputConvertString(mTitleEventTextInputLayout),
-                    textInputConvertString(mDescriptionsEventTextInputLayout),
-                    mDate,
-                    textViewConvertString(mTimeEvent)
-
-            ));
+            if (mAddEventListener != null) {
+                mAddEventListener.onAddEventClickListener(
+                        textInputConvertString(mTitleEventTextInputLayout),
+                        textInputConvertString(mDescriptionsEventTextInputLayout),
+                        mDate,
+                        textViewConvertString(mTimeEvent),
+                        mImageEvents);
+            } else {
+                mEditEventClickListener.onEditEventClickListener(mEventId,
+                        textInputConvertString(mTitleEventTextInputLayout),
+                        textInputConvertString(mDescriptionsEventTextInputLayout),
+                        mDate,
+                        textViewConvertString(mTimeEvent),
+                        mImageEvents);
+            }
 
             getFragmentManager().popBackStack();
         }
     }
 
-    @OnClick(R.id.calendar_layout)
+    @OnClick({R.id.day_of_the_week_event, R.id.month_and_year_event, R.id.number_day_event})
     public void getCurrentCalendar() {
         getInstanceDialogFragment(new DatePickerDialogFragment(onDateSetListener))
                 .show(getFragmentManager(), AppConstant.CHANGE_DATE);
 
     }
 
-    @OnClick(R.id.time_layout)
+    @OnClick(R.id.time_event)
     public void getCurrentTime() {
         getInstanceDialogFragment(new TimePickerDialogFragment(onTimeSetListener))
                 .show(getFragmentManager(), AppConstant.CHANGE_TIME);
@@ -174,8 +229,10 @@ public class AddEditEventFragment extends BaseFragment {
                         ClipData.Item item = clipData.getItemAt(i);
                         Uri uri = item.getUri();
                         String path = getPath(getContext(), uri);
+                        imagePath.add(path);
                         ImageEvent mImageEvent = new ImageEvent();
                         mImageEvent.setImagePath(path);
+
                         mImageEvents.add(mImageEvent);
 
                     }
@@ -191,24 +248,7 @@ public class AddEditEventFragment extends BaseFragment {
     }
 
     public void showImagesEvents(RealmList<ImageEvent> events) {
-        this.mImageEvents = events;
-        mEventViewPager.setAdapter(new EventViewPagerAdapter(getContext(), mImageEvents));
-
-    }
-
-
-    @OnClick(R.id.addB_PhotoCamera_btn)
-    public void addPhotoCamera() {
-        startActivityForResult(addPhotoFromCamera(),
-                AppConstant.REQEST_CAMERA);
-
-    }
-
-
-    @OnClick(R.id.add_PhotoGallery_btn)
-    public void addImageGallery() {
-        startActivityForResult(Intent.createChooser
-                (addImagesFromGallery(), "Select File"), AppConstant.REQEST_GALLERY);
+        mEventViewPager.setAdapter(new EventViewPagerAdapter(getContext(), events));
 
     }
 
@@ -237,5 +277,39 @@ public class AddEditEventFragment extends BaseFragment {
         mUnbinder.unbind();
     }
 
+    private void showEvent(String id) {
+        Event event = mUtilRealm.getEventById(id);
+        mTitleEventTextInputLayout.getEditText().setText(event.getTitle());
+        mDescriptionsEventTextInputLayout.getEditText().setText(event.getDescriptions());
+        getCurrentDateAndTime(event.getDate());
+        RealmList<ImageEvent> imageEvents = mUtilRealm.getEventById(mEventId).getImageEvent();
+        mEventViewPager.setAdapter(new EventViewPagerAdapter(getContext(), imageEvents));
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.add_edit_event_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.add_PhotoGallery_btn: {
+                startActivityForResult(Intent.createChooser
+                        (addImagesFromGallery(), "Select File"), AppConstant.REQEST_GALLERY);
+                return true;
+            }
+            case R.id.addB_PhotoCamera_btn: {
+                startActivityForResult(addPhotoFromCamera(),
+                        AppConstant.REQEST_CAMERA);
+                return true;
+            }
+            case android.R.id.home: {
+                getFragmentManager().popBackStack();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

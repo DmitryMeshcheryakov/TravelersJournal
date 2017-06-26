@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/add_edit_event_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:fitsSystemWindows="true"
+        >
+
+        <CustomFonts.CustomCollapsingToolbarLayout
+            android:id="@+id/add_edit_event_collapsing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimary"
+            app:expandedTitleGravity="center_horizontal|bottom"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+
+            >
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/event_ViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+            </android.support.v4.view.ViewPager>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/add_edit_event_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                />
+        </CustomFonts.CustomCollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/save_event_FAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_save_24dp"
+        app:layout_anchor="@id/add_edit_event_appbar"
+        app:layout_anchorGravity="bottom|right|end"
+        />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CustomFonts.CustomTextView
+                android:id="@+id/number_day_event"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/text_size_30sp"/>
+
+            <CustomFonts.CustomTextView
+                android:id="@+id/day_of_the_week_event"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/number_day_event"
+                android:gravity="center|left"
+                android:text="Вторник"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/text_size_15sp"/>
+
+
+            <CustomFonts.CustomTextView
+                android:id="@+id/month_and_year_event"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:layout_above="@+id/title_event_TextInputLayout"
+                android:layout_toEndOf="@+id/number_day_event"
+                android:gravity="center|left"
+                android:text="Июнь 2017"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/text_size_15sp"/>
+
+
+            <CustomFonts.CustomTextView
+                android:id="@+id/time_event"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@+id/view"
+                android:layout_marginRight="15dp"
+                android:layout_marginStart="50dp"
+                android:layout_toEndOf="@+id/day_of_the_week_event"
+                android:text="23:30"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/text_size_30sp"/>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:layout_alignRight="@id/day_of_the_week_event"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/separator">
+
+            </View>
+
+
+            <View
+                android:id="@+id/horizont_sep"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_below="@id/number_day_event"
+
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/separator">
+            </View>
+
+            <CustomFonts.CustomTextInputLayout
+                android:id="@+id/title_event_TextInputLayout"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/horizont_sep"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:textColorHint="@color/colorAccent">
+
+                <CustomFonts.CustomTextEditInputLayout
+                    android:id="@+id/title_event_EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Title"
+                    android:inputType="textMultiLine"
+                    android:textColor="@android:color/black"/>
+            </CustomFonts.CustomTextInputLayout>
+
+            <CustomFonts.CustomTextInputLayout
+                android:id="@+id/description_event_TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_event_TextInputLayout"
+                android:textColorHint="@color/colorAccent"
+                >
+
+                <CustomFonts.CustomTextEditInputLayout
+                    android:id="@+id/customTextEditInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Write here..."
+                    android:inputType="textMultiLine"
+                    android:textColor="@android:color/black"/>
+            </CustomFonts.CustomTextInputLayout>
+
+
+        </RelativeLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+

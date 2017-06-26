@@ -4,7 +4,7 @@ package by.insight.travelersjournal;
 import java.util.Arrays;
 import java.util.List;
 
-import by.insight.travelersjournal.realm.RealmTable;
+import by.insight.travelersjournal.database.RealmTable;
 
 public class AppConstant {
 
@@ -23,9 +23,7 @@ public class AppConstant {
 
     public static final String CHANGE_TIME = "changeTime";
 
-    public static final int TRAVEL_CONTAINER = R.id.travel_fragment_container;
-
-    public static final int EVENT_CONTAINER = R.id.event_fragment_container;
+    public static final int TRAVEL_CONTAINER = R.id.fragment_container;
 
     public static final String KEY_BUNDLE = RealmTable.ID;
 
@@ -36,6 +34,9 @@ public class AppConstant {
     public static final String KEY_DAY_OF_THE_WEEK = "dayOfTheWeekEvent";
 
     public static final String KEY_TIME = "timeEvent";
+
+    public static final String KEY_EVENT_ID = "Event_ID";
+    public static final String KEY_TRAVEL_ID = "Travel_ID";
 
     public static final  String IMAGES = "image/*";
 

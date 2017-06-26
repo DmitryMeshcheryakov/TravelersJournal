@@ -1,4 +1,4 @@
-package by.insight.travelersjournal.view.fragments;
+package by.insight.travelersjournal.view.fragments.dialog_fragment;
 
 
 import android.app.DatePickerDialog;

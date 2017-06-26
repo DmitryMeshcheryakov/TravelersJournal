@@ -10,6 +10,7 @@ import android.widget.Toast;
 import by.insight.travelersjournal.R;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -57,4 +58,5 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Manifest.permission.CAMERA);
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package by.insight.travelersjournal.realm;
+package by.insight.travelersjournal.database;
 
 
 import by.insight.travelersjournal.model.Event;
