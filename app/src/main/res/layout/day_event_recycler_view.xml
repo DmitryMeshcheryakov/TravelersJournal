@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/add_edit_event_rv_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/day_event_layout_rv"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@id/add_edit_event_rv_toolbar">
+
+
+        <CustomFonts.CustomTextView
+            android:id="@+id/name_travel_event_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="Germany"
+            android:textColor="@color/textBlack"
+            android:textSize="@dimen/text_size_30sp"
+            />
+
+        <View
+            android:id="@+id/horizont_sep"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/name_travel_event_rv"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/separator"></View>
+
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_event"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/day_event_layout_rv"
+        ></android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_day_event_FAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_circle_outline_24dp"/>
+</RelativeLayout>
