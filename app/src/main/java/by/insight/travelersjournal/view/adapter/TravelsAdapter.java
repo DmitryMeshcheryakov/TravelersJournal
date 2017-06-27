@@ -16,7 +16,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import by.insight.travelersjournal.Bus.Message;
 import by.insight.travelersjournal.R;
 import by.insight.travelersjournal.model.Travel;
 import by.insight.travelersjournal.view.fragments.RecyclerViewTravelFragment;

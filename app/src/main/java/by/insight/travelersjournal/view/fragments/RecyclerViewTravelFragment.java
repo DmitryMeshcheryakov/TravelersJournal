@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,14 +17,19 @@ import android.view.ViewGroup;
 
 import com.mikepenz.itemanimators.ScaleUpAnimator;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import by.insight.travelersjournal.R;
 import by.insight.travelersjournal.database.UtilRealm;
+import by.insight.travelersjournal.model.ImageEvent;
 import by.insight.travelersjournal.model.Travel;
 
+import by.insight.travelersjournal.view.adapter.TravelViewPagerAdapter;
 import by.insight.travelersjournal.view.adapter.TravelsAdapter;
 import by.insight.travelersjournal.view.fragments.base.BaseFragment;
 import io.realm.RealmResults;
@@ -39,6 +45,9 @@ public class RecyclerViewTravelFragment extends BaseFragment {
 
     @BindView(R.id.recycler_view_travel_toolbar)
     Toolbar mToolbar;
+
+    @BindView(R.id.travel_rv_ViewPager)
+    ViewPager mTravelViewPager;
 
     private TravelsAdapter mAdapter;
 
@@ -64,21 +73,24 @@ public class RecyclerViewTravelFragment extends BaseFragment {
         void onSelectTravel(String id);
     }
 
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.travels_recycler_view_fragment, container, false);
         setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
-        init();
+        mUtilRealm = new UtilRealm();
+        initToolbar();
         initRecyclerListener();
         showTravels(mUtilRealm.getAllTravels());
         return view;
 
     }
 
-    private void init() {
-        mUtilRealm = new UtilRealm();
+    private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

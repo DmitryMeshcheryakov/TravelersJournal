@@ -60,6 +60,12 @@ public class RecyclerViewEventFragment extends BaseFragment {
         void onEditEvent(String id);
     }
 
+    private OnSelectEventsFragmentListener mSelectEventsFragmentListener;
+
+    public interface OnSelectEventsFragmentListener {
+        void onSelectEvent(String id);
+    }
+
     private UtilRealm mUtilRealm;
 
     @Nullable
@@ -125,7 +131,7 @@ public class RecyclerViewEventFragment extends BaseFragment {
         mAdapter.setOnItemEventClickListener(new EventsAdapter.OnItemEventClickListener() {
             @Override
             public void onItemClick(String id) {
-
+                   mSelectEventsFragmentListener.onSelectEvent(id);
             }
         });
     }
@@ -140,6 +146,7 @@ public class RecyclerViewEventFragment extends BaseFragment {
         super.onAttach(context);
         mAddEventsFragmentListener = (OnAddEventsFragmentListener) context;
         mEditEventsFragmentListener = (OnEditEventsFragmentListener) context;
+        mSelectEventsFragmentListener = (OnSelectEventsFragmentListener) context;
     }
 
     @Override
@@ -147,6 +154,7 @@ public class RecyclerViewEventFragment extends BaseFragment {
         super.onDetach();
         mAddEventsFragmentListener = null;
         mEditEventsFragmentListener = null;
+        mSelectEventsFragmentListener = null;
     }
 
     @Override

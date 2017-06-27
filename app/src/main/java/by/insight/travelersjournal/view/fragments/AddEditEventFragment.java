@@ -244,7 +244,6 @@ public class AddEditEventFragment extends BaseFragment {
 
         }
 
-
     }
 
     public void showImagesEvents(RealmList<ImageEvent> events) {
