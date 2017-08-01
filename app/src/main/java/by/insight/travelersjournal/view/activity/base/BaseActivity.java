@@ -17,16 +17,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static final int RC_READ_EXTERNAL_STORAGE_READ = 123;
     private static final int RC_CAMERA = 124;
+    private static final int RC_WRITE_EXTERNAL_STORAGE_READ = 125;
 
-
-    public void showMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         permissionsExternalStorageRead();
+        permissionsExternalStorageWrite();
         permissionsCamera();
     }
 
@@ -45,6 +43,18 @@ public abstract class BaseActivity extends AppCompatActivity {
             EasyPermissions.requestPermissions(this, getResources().getString(R.string.permissions_gallery),
                     RC_READ_EXTERNAL_STORAGE_READ,
                     Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+    }
+
+
+    @AfterPermissionGranted(RC_WRITE_EXTERNAL_STORAGE_READ)
+    public void permissionsExternalStorageWrite() {
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+        } else {
+            EasyPermissions.requestPermissions(this, getResources().getString(R.string.permissions_gallery),
+                    RC_WRITE_EXTERNAL_STORAGE_READ,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 

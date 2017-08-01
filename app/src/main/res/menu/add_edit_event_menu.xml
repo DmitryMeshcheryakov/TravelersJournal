@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/addB_PhotoCamera_btn"
+        android:id="@+id/add_PhotoCamera_btn"
         android:icon="@drawable/ic_add_a_photo_24dp"
         android:orderInCategory="100"
         android:title="@string/action_add_photo"

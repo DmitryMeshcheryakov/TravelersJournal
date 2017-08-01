@@ -154,7 +154,9 @@ public class DetailEventFragment extends BaseFragment {
 
     @Override
     public void onDestroyView() {
-        mTimer.cancel();
+        if(mTimer != null) {
+            mTimer.cancel();
+        }
         super.onDestroyView();
         unbinder.unbind();
 

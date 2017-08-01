@@ -3,8 +3,8 @@ package by.insight.travelersjournal.view.fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -19,6 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TimePicker;
+
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,7 +53,6 @@ import io.realm.RealmList;
 import static by.insight.travelersjournal.tools.DateFormatter.convertTimeToString;
 import static by.insight.travelersjournal.tools.DialogFragmentUtils.getInstanceDialogFragment;
 import static by.insight.travelersjournal.tools.InitUtil.initToolbar;
-import static by.insight.travelersjournal.tools.IntentUtils.addImagesFromGallery;
 import static by.insight.travelersjournal.tools.IntentUtils.addPhotoFromCamera;
 import static by.insight.travelersjournal.tools.TextUtils.arrayDateKey;
 import static by.insight.travelersjournal.tools.TextUtils.textInputConvertString;
@@ -201,21 +204,30 @@ public class AddEditEventFragment extends BaseFragment {
             }
             case AppConstant.REQEST_GALLERY: {
 
-                ClipData clipData = data.getClipData();
+//                ClipData clipData = data.getClipData();
+//
+//                if (clipData != null) {
+//                    for (int i = 0; i < clipData.getItemCount(); i++) {
+//                        ClipData.Item item = clipData.getItemAt(i);
+//                        Uri uri = item.getUri();
+//                        String path = getPath(getContext(), uri);
+//                        imagePath.add(path);
+//                        ImageEvent mImageEvent = new ImageEvent();
+//                        mImageEvent.setImagePath(path);
+//
+//                        mImageEvents.add(mImageEvent);
+//
+//                    }
+//                }
 
-                if (clipData != null) {
-                    for (int i = 0; i < clipData.getItemCount(); i++) {
-                        ClipData.Item item = clipData.getItemAt(i);
-                        Uri uri = item.getUri();
-                        String path = getPath(getContext(), uri);
-                        imagePath.add(path);
-                        ImageEvent mImageEvent = new ImageEvent();
-                        mImageEvent.setImagePath(path);
 
-                        mImageEvents.add(mImageEvent);
+               for(String realPath :  Matisse.obtainPathResult(data)) {
+                   imagePath.add(realPath);
+                   ImageEvent mImageEvent = new ImageEvent();
+                   mImageEvent.setImagePath(realPath);
 
-                    }
-                }
+                   mImageEvents.add(mImageEvent);
+               }
 
                 showImagesEvents(mImageEvents);
             }
@@ -266,11 +278,19 @@ public class AddEditEventFragment extends BaseFragment {
 
         switch (item.getItemId()) {
             case R.id.add_PhotoGallery_btn: {
-                startActivityForResult(Intent.createChooser
-                        (addImagesFromGallery(), "Select File"), AppConstant.REQEST_GALLERY);
+//                startActivityForResult(Intent.createChooser
+//                        (addImagesFromGallery(), "Select Pictures"), AppConstant.REQEST_GALLERY);
+                Matisse.from(getActivity())
+                        .choose(MimeType.of(MimeType.JPEG, MimeType.PNG))
+                        .countable(true)
+                        .maxSelectable(9)
+                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                        .thumbnailScale(0.85f)
+                        .imageEngine(new GlideEngine())
+                        .forResult(AppConstant.REQEST_GALLERY);
                 return true;
             }
-            case R.id.addB_PhotoCamera_btn: {
+            case R.id.add_PhotoCamera_btn: {
                 startActivityForResult(addPhotoFromCamera(),
                         AppConstant.REQEST_CAMERA);
                 return true;

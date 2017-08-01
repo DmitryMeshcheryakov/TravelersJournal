@@ -57,5 +57,6 @@ dependencies {
     compile 'com.joanzapata.iconify:android-iconify-material:2.2.2'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    compile 'com.zhihu.android:matisse:0.5.0-alpha4'
 
 }

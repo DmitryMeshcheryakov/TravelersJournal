@@ -17,7 +17,7 @@
     <RelativeLayout
         android:id="@+id/day_event_layout_rv"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:layout_below="@id/add_edit_day_event_rv_toolbar">
 
 
