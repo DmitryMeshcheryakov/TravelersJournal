@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,7 +19,12 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.MaterialIcons;
 
+import CustomFonts.CustomCollapsingToolbarLayout;
+import CustomFonts.CustomTextEditInputLayout;
+import CustomFonts.CustomTextInputLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +36,7 @@ import by.insight.travelersjournal.database.UtilRealm;
 import by.insight.travelersjournal.model.Travel;
 import by.insight.travelersjournal.view.fragments.base.BaseFragment;
 
+import static by.insight.travelersjournal.tools.InitUtil.initToolbar;
 import static by.insight.travelersjournal.tools.KeyboardUtils.hideOrShowFAB;
 import static by.insight.travelersjournal.tools.KeyboardUtils.hideTheKeyboard;
 import static by.insight.travelersjournal.tools.SDUtils.getRealPathFromUri;
@@ -43,56 +46,35 @@ import static by.insight.travelersjournal.tools.UtilsValidate.isInfoValidate;
 
 public class AddEditTravelFragment extends BaseFragment {
 
-    @BindView(R.id.title_travel_TextInputLayout)
-    TextInputLayout mTitleTravelTextInputLayout;
-
+    @BindView(R.id.add_edit_image_item_travel)
+    ImageView mAddEditImageItemTravel;
+    @BindView(R.id.add_edit_travel_toolbar)
+    Toolbar mAddEditTravelToolbar;
+    @BindView(R.id.add_edit_travel_collapsing)
+    CustomCollapsingToolbarLayout mAddEditTravelCollapsing;
+    @BindView(R.id.add_edit_travel_appbar)
+    AppBarLayout mAddEditTravelAppbar;
     @BindView(R.id.save_travel_FAB)
     FloatingActionButton mSaveTravelFAB;
-
-    @BindView(R.id.add_edit_image_item_travel)
-    ImageView mImageItemTravel;
-
-    @BindView(R.id.add_edit_travel_toolbar)
-    Toolbar mToolbar;
-
-    @BindView(R.id.add_edit_travel_collapsing)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-
+    @BindView(R.id.title_travel_EditText)
+    CustomTextEditInputLayout mTitleTravelEditText;
+    @BindView(R.id.title_travel_TextInputLayout)
+    CustomTextInputLayout mTitleTravelTextInputLayout;
+    Unbinder unbinder;
     private RequestOptions mRequestOptions;
 
     private String travelId;
-    private Unbinder mUnbinder;
     private String mPathImage;
     private UtilRealm mUtilRealm;
 
-
-    private OnAddTravelClickListener mAddTravelListener;
-
-    public void setAddTravelListener(OnAddTravelClickListener listener) {
-        this.mAddTravelListener = listener;
-    }
-
-    public interface OnAddTravelClickListener {
-        void onAddTravelClickListener(String travelTitle, String imagePath);
-    }
-
-    private OnEditTravelClickListener mOnEditTravelClickListener;
-
-    public void setEditTravelListener(OnEditTravelClickListener listener) {
-        this.mOnEditTravelClickListener = listener;
-    }
-
-    public interface OnEditTravelClickListener {
-        void onEditTravelClickListener(String id, String travelTitle, String imagePath);
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_edit_travel_fragment, container, false);
         setHasOptionsMenu(true);
-        mUnbinder = ButterKnife.bind(this, view);
-        initToolbar();
+        unbinder = ButterKnife.bind(this, view);
+        initToolbar(mAddEditTravelToolbar, getActivity());
         textWatcher();
         hideOrShowFAB(textInputConvertString(mTitleTravelTextInputLayout), mSaveTravelFAB);
         mRequestOptions = new RequestOptions().optionalCenterInside();
@@ -106,19 +88,13 @@ public class AddEditTravelFragment extends BaseFragment {
 
     }
 
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
 
     @OnTextChanged(value = R.id.title_travel_EditText,
             callback = OnTextChanged.Callback.TEXT_CHANGED)
     public void textWatcher() {
         hideOrShowFAB(textInputConvertString(mTitleTravelTextInputLayout), mSaveTravelFAB);
         if (textInputConvertString(mTitleTravelTextInputLayout) != null) {
-            mCollapsingToolbarLayout.setTitle(textInputConvertString(mTitleTravelTextInputLayout));
+            mAddEditTravelCollapsing.setTitle(textInputConvertString(mTitleTravelTextInputLayout));
         }
     }
 
@@ -128,6 +104,7 @@ public class AddEditTravelFragment extends BaseFragment {
 
             hideTheKeyboard(getActivity(), getView());
             if (mAddTravelListener != null) {
+
                 mAddTravelListener.onAddTravelClickListener(
                         textInputConvertString(mTitleTravelTextInputLayout),
                         mPathImage);
@@ -142,10 +119,11 @@ public class AddEditTravelFragment extends BaseFragment {
         }
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
+        unbinder.unbind();
     }
 
 
@@ -159,7 +137,7 @@ public class AddEditTravelFragment extends BaseFragment {
 
                 Glide.with(getContext())
                         .load(mPathImage)
-                        .into(mImageItemTravel);
+                        .into(mAddEditImageItemTravel);
             }
         }
     }
@@ -169,13 +147,17 @@ public class AddEditTravelFragment extends BaseFragment {
         mTitleTravelTextInputLayout.getEditText().setText(travel.getTitle());
         Glide.with(getContext())
                 .load(travel.getImagePath())
-                .into(mImageItemTravel);
+                .into(mAddEditImageItemTravel);
         mPathImage = travel.getImagePath();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.add_edit_travel_menu, menu);
+        menu.findItem(R.id.add_image_travel)
+                .setIcon(new IconDrawable(getContext(), MaterialIcons.md_local_see)
+                        .colorRes(R.color.colorTextWhite)
+                        .actionBarSize());
         super.onCreateOptionsMenu(menu, inflater);
     }
 

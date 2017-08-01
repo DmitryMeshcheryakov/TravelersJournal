@@ -1,13 +1,11 @@
 package by.insight.travelersjournal.view.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,12 +13,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CustomFonts.CustomCollapsingToolbarLayout;
+import CustomFonts.CustomTextInputLayout;
+import CustomFonts.CustomTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,49 +30,45 @@ import by.insight.travelersjournal.database.UtilRealm;
 import by.insight.travelersjournal.model.Event;
 import by.insight.travelersjournal.model.ImageEvent;
 import by.insight.travelersjournal.view.adapter.EventViewPagerAdapter;
+import by.insight.travelersjournal.view.fragments.base.BaseFragment;
 import io.realm.RealmList;
 
+import static by.insight.travelersjournal.tools.InitUtil.initToolbar;
 import static by.insight.travelersjournal.tools.TextUtils.arrayDateKey;
 
 
-public class DetailEventFragment extends Fragment {
-    @BindView(R.id.detail_event_toolbar)
-    Toolbar mToolbar;
-
-    @BindView(R.id.detail_event_collapsing)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-
-    @BindView(R.id.detail_title_event)
-    TextView mDetailTitleEvent;
-
-    @BindView(R.id.detail_descriptions_event)
-    TextView mDetailDescriptionsEvent;
-
-    @BindView(R.id.detail_number_day_event)
-    TextView mDetailNumberDayEvent;
-
-    @BindView(R.id.detail_day_of_the_week_event)
-    TextView mDetailDayOfTheWeekEvent;
-
-    @BindView(R.id.detail_month_and_year_event)
-    TextView mDetailMonthAndYearEvent;
-
-    @BindView(R.id.detail_time_event)
-    TextView mDetailTimeEvent;
+public class DetailEventFragment extends BaseFragment {
 
     @BindView(R.id.detail_event_ViewPager)
     ViewPager mDetailEventViewPager;
-
+    @BindView(R.id.detail_event_toolbar)
+    Toolbar mDetailEventToolbar;
+    @BindView(R.id.detail_event_collapsing)
+    CustomCollapsingToolbarLayout mDetailEventCollapsing;
+    @BindView(R.id.detail_event_appbar)
+    AppBarLayout mDetailEventAppbar;
+    @BindView(R.id.detail_number_day_event)
+    CustomTextView mDetailNumberDayEvent;
+    @BindView(R.id.detail_day_of_the_week_event)
+    CustomTextView mDetailDayOfTheWeekEvent;
+    @BindView(R.id.detail_month_and_year_event)
+    CustomTextView mDetailMonthAndYearEvent;
+    @BindView(R.id.detail_time_event)
+    CustomTextView mDetailTimeEvent;
+    @BindView(R.id.detail_title_event)
+    CustomTextView mDetailTitleEvent;
+    @BindView(R.id.detail_title_event_TIL)
+    CustomTextInputLayout mDetailTitleEventTIL;
+    @BindView(R.id.detail_descriptions_event)
+    CustomTextView mDetailDescriptionsEvent;
+    @BindView(R.id.detail_description_event_TIL)
+    CustomTextInputLayout mDetailDescriptionEventTIL;
+    @BindView(R.id.edit_event_FAB)
+    FloatingActionButton mEditEventFAB;
+    Unbinder unbinder;
     private UtilRealm mUtilRealm;
-    private Unbinder mUnbinder;
     private String mEventId;
     private Timer mTimer;
-
-    private OnSelectEditEventFragmentListener mOnSelectEditEventFragmentListener;
-
-    public interface OnSelectEditEventFragmentListener {
-        void OnSelectEditEvent(String id);
-    }
 
 
     @Nullable
@@ -81,8 +76,9 @@ public class DetailEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_event_fragment, container, false);
         setHasOptionsMenu(true);
-        mUnbinder = ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         init();
+        initToolbar(mDetailEventToolbar, getActivity());
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             mEventId = bundle.getString(AppConstant.KEY_EVENT_ID);
@@ -90,15 +86,13 @@ public class DetailEventFragment extends Fragment {
                 showEvent(mEventId);
             }
         }
+
         return view;
     }
 
     private void init() {
         mUtilRealm = new UtilRealm();
-        mCollapsingToolbarLayout.setTitle(" ");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        mDetailEventCollapsing.setTitle(" ");
 
     }
 
@@ -108,23 +102,23 @@ public class DetailEventFragment extends Fragment {
         mDetailDescriptionsEvent.setText(event.getDescriptions());
         mDetailTimeEvent.setText(event.getTime());
         currentDate(event.getDate());
-        final RealmList<ImageEvent> imageEvents = mUtilRealm.getEventById(id).getImageEvent();
+        RealmList<ImageEvent> imageEvents = mUtilRealm.getAllImagesEventsByEventId(id);
         mDetailEventViewPager.setAdapter(new EventViewPagerAdapter(getContext(), imageEvents));
+        if (imageEvents.size() > 1) {
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
 
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                mDetailEventViewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDetailEventViewPager.setCurrentItem((mDetailEventViewPager.getCurrentItem()+1)%imageEvents.size());
-                    }
-                });
-            }
-        };
+                    mDetailEventViewPager.post(() -> mDetailEventViewPager
+                            .setCurrentItem((mDetailEventViewPager.getCurrentItem() + 1) % imageEvents.size()));
+                }
 
-        mTimer = new Timer();
-        mTimer.schedule(timerTask, 3000, 3000);
+            };
+            mTimer = new Timer();
+            mTimer.schedule(timerTask, 3000, 3000);
+        }
+
+
     }
 
     private void currentDate(Long date) {
@@ -137,15 +131,6 @@ public class DetailEventFragment extends Fragment {
     public void EditEvent() {
         mOnSelectEditEventFragmentListener.OnSelectEditEvent(mEventId);
     }
-
-    @Override
-    public void onDestroyView() {
-        mTimer.cancel();
-        super.onDestroyView();
-        mUnbinder.unbind();
-
-    }
-
 
 
 
@@ -168,14 +153,11 @@ public class DetailEventFragment extends Fragment {
 
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mOnSelectEditEventFragmentListener = (OnSelectEditEventFragmentListener) context;
+    public void onDestroyView() {
+        mTimer.cancel();
+        super.onDestroyView();
+        unbinder.unbind();
+
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mOnSelectEditEventFragmentListener = null;
-    }
 }

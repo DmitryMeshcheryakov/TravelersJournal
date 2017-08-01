@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/add_edit_event_rv_toolbar"
+        android:id="@+id/add_edit_day_event_rv_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -18,11 +18,11 @@
         android:id="@+id/day_event_layout_rv"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_below="@id/add_edit_event_rv_toolbar">
+        android:layout_below="@id/add_edit_day_event_rv_toolbar">
 
 
         <CustomFonts.CustomTextView
-            android:id="@+id/name_travel_event_rv"
+            android:id="@+id/name_travel_day_event_rv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -38,20 +38,20 @@
             android:id="@+id/horizont_sep"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@+id/name_travel_event_rv"
+            android:layout_below="@+id/name_travel_day_event_rv"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/separator"></View>
+            android:background="@drawable/separator"/>
 
 
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_event"
+        android:id="@+id/recycler_view_day_event"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/day_event_layout_rv"
-        ></android.support.v7.widget.RecyclerView>
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_day_event_FAB"

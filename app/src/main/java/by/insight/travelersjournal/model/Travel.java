@@ -17,7 +17,7 @@ public class Travel extends RealmObject {
 
     private String imagePath;
 
-    private RealmList<Event> events;
+    private RealmList<DayEvents> events;
 
     public Travel() {
     }
@@ -52,11 +52,11 @@ public class Travel extends RealmObject {
         this.descriptions = descriptions;
     }
 
-    public RealmList<Event> getEvents() {
+    public RealmList<DayEvents> getDayEvents() {
         return events;
     }
 
-    public void setEvents(RealmList<Event> events) {
+    public void setDayEvents(RealmList<DayEvents> events) {
         this.events = events;
     }
 

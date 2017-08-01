@@ -9,7 +9,7 @@ public class ImageEvent extends RealmObject {
 
     @PrimaryKey
     private String id;
-    @Required
+
     private String imagePath;
 
     public String getId() {

@@ -10,6 +10,7 @@
         <item name="android:dialogTheme">@style/AppDialogTheme</item>
         <item name="android:datePickerStyle">@style/SpinnerDatePicker</item>
         <item name="android:timePickerStyle">@style/SpinnerTimePicker</item>
+        <item name="android:editTextBackground">@style/CustomEditText</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -37,6 +38,10 @@
     <style name="SpinnerTimePicker"
         parent="android:Widget.Material.TimePicker">
         <item name="android:timePickerMode">spinner</item>
+    </style>
+
+    <style name="CustomEditText" >
+        <item name="android:background">@drawable/edit_text_design</item>
     </style>
 
 

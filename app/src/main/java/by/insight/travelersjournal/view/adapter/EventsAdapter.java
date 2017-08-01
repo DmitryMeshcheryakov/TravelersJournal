@@ -39,8 +39,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         void onEditEvent(String id);
     }
 
-    public void setEditEventFragmentListener(EditEventFragmentListener editTravelsFragmentListener) {
-        this.mEditEventFragmentListener = editTravelsFragmentListener;
+    public void setEditEventFragmentListener(EditEventFragmentListener editEventFragmentListener) {
+        this.mEditEventFragmentListener = editEventFragmentListener;
     }
 
     public EventsAdapter(RealmList<Event> events, Context context) {
@@ -65,12 +65,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.mTimeEvent.setText(mEvents
                 .get(position)
                 .getTime());
-        holder.mEditEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mEditEventFragmentListener.onEditEvent(mEvents.get(position).getId());
-            }
-        });
+        holder.mEditEvent.setOnClickListener(view -> mEditEventFragmentListener
+                .onEditEvent(mEvents.get(position).getId()));
 
         if (mEvents.get(position).getImageEvent().size() > 0) {
             Glide.with(_context)

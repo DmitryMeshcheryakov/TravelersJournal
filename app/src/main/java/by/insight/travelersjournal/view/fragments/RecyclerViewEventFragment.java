@@ -1,21 +1,18 @@
 package by.insight.travelersjournal.view.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import java.util.Date;
 
+import CustomFonts.CustomTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,95 +21,59 @@ import by.insight.travelersjournal.AppConstant;
 import by.insight.travelersjournal.R;
 import by.insight.travelersjournal.database.UtilRealm;
 import by.insight.travelersjournal.model.Event;
-
-
 import by.insight.travelersjournal.view.adapter.EventsAdapter;
 import by.insight.travelersjournal.view.fragments.base.BaseFragment;
 import io.realm.RealmList;
 
+import static by.insight.travelersjournal.tools.InitUtil.initRecyclerListenerEvent;
+import static by.insight.travelersjournal.tools.InitUtil.initToolbar;
+import static by.insight.travelersjournal.tools.TextUtils.arrayDateKey;
+import static by.insight.travelersjournal.tools.UtilsValidate.isDateValidate;
+
 
 public class RecyclerViewEventFragment extends BaseFragment {
 
-    @BindView(R.id.add_event_FAB)
-    FloatingActionButton mAddEventFAB;
-
-    @BindView(R.id.recycler_view_event)
-    RecyclerView mRecyclerViewEvent;
 
     @BindView(R.id.add_edit_event_rv_toolbar)
-    Toolbar mToolbar;
-
+    Toolbar mAddEditEventRvToolbar;
+    @BindView(R.id.number_day_event_rv)
+    CustomTextView mNumberDayEventRv;
+    @BindView(R.id.day_of_the_week_event_rv)
+    CustomTextView mDayOfTheWeekEventRv;
+    @BindView(R.id.month_and_year_event_rv)
+    CustomTextView mMonthAndYearEventRv;
+    @BindView(R.id.date_layout_rv)
+    RelativeLayout mDateLayoutRv;
+    @BindView(R.id.recycler_view_event)
+    RecyclerView mRecyclerViewEvent;
+    @BindView(R.id.add_event_FAB)
+    FloatingActionButton mAddEventFAB;
+    Unbinder unbinder;
     private EventsAdapter mAdapter;
 
     private RealmList<Event> mEventRealmList;
-    private String mTravelsId;
-    private Unbinder mUnbinder;
-
-    private OnAddEventsFragmentListener mAddEventsFragmentListener;
-
-    public interface OnAddEventsFragmentListener {
-        void onAddEvent();
-    }
-
-    private OnEditEventsFragmentListener mEditEventsFragmentListener;
-
-    public interface OnEditEventsFragmentListener {
-        void onEditEvent(String id);
-    }
-
-    private OnSelectEventsFragmentListener mSelectEventsFragmentListener;
-
-    public interface OnSelectEventsFragmentListener {
-        void onSelectEvent(String id);
-    }
-
+    private String mDayEventId;
     private UtilRealm mUtilRealm;
+    private Long mDate = new Date().getTime();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_recycler_view_fragment, container, false);
         setHasOptionsMenu(true);
-        mUnbinder = ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         mUtilRealm = new UtilRealm();
-        initToolbar();
-        initRecyclerListener();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            mTravelsId = bundle.getString(AppConstant.KEY_TRAVEL_ID);
-            showEvents(mUtilRealm.getAllEventsByTravelId(mTravelsId));
+            mDayEventId = bundle.getString(AppConstant.KEY_DAY_EVENT_ID);
+            showEvents(mUtilRealm.getAllEventsByDayEventsId(mDayEventId));
         }
-
+        initToolbar(mAddEditEventRvToolbar, getActivity());
+        initRecyclerListenerEvent(mRecyclerViewEvent, mAdapter, mUtilRealm, mEventRealmList, getContext());
+        getCurrentDate(mDate);
         return view;
     }
 
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void initRecyclerListener() {
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerViewEvent.setLayoutManager(layoutManager);
-        mRecyclerViewEvent.setItemAnimator(new DefaultItemAnimator());
-        ItemTouchHelper swipeToDismissTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                mUtilRealm.deleteEventById(mEventRealmList.get(viewHolder.getAdapterPosition()).getId());
-                mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-            }
-        });
-        swipeToDismissTouchHelper.attachToRecyclerView(mRecyclerViewEvent);
-    }
 
     public void showEvents(RealmList<Event> events) {
         this.mEventRealmList = events;
@@ -121,19 +82,9 @@ public class RecyclerViewEventFragment extends BaseFragment {
 
         mRecyclerViewEvent.setAdapter(mAdapter);
 
-        mAdapter.setEditEventFragmentListener(new EventsAdapter.EditEventFragmentListener() {
-            @Override
-            public void onEditEvent(String id) {
-                mEditEventsFragmentListener.onEditEvent(id);
-            }
-        });
+        mAdapter.setEditEventFragmentListener(id -> mEditEventsFragmentListener.onEditEvent(id));
 
-        mAdapter.setOnItemEventClickListener(new EventsAdapter.OnItemEventClickListener() {
-            @Override
-            public void onItemClick(String id) {
-                   mSelectEventsFragmentListener.onSelectEvent(id);
-            }
-        });
+        mAdapter.setOnItemEventClickListener(id -> mSelectEventsFragmentListener.onSelectEvent(id));
     }
 
     @OnClick(R.id.add_event_FAB)
@@ -141,26 +92,18 @@ public class RecyclerViewEventFragment extends BaseFragment {
         mAddEventsFragmentListener.onAddEvent();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mAddEventsFragmentListener = (OnAddEventsFragmentListener) context;
-        mEditEventsFragmentListener = (OnEditEventsFragmentListener) context;
-        mSelectEventsFragmentListener = (OnSelectEventsFragmentListener) context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mAddEventsFragmentListener = null;
-        mEditEventsFragmentListener = null;
-        mSelectEventsFragmentListener = null;
+    private void getCurrentDate(Long date) {
+        if (isDateValidate(date)) {
+            mDayOfTheWeekEventRv.setText(arrayDateKey(date, AppConstant.KEY_DAY_OF_THE_WEEK));
+            mMonthAndYearEventRv.setText(arrayDateKey(date, AppConstant.KEY_MONTH_AND_YEAR));
+            mNumberDayEventRv.setText(arrayDateKey(date, AppConstant.KEY_NUMBER_DAY));
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
+        unbinder.unbind();
 
     }
 

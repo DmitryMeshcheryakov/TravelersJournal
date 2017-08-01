@@ -54,12 +54,9 @@ public class TravelViewPagerAdapter extends PagerAdapter {
                 .load(mImagePath.get(position).getImagePath())
                 .into(imageView);
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        imageView.setOnClickListener(v -> {
 
 
-            }
         });
 
         container.addView(itemView);

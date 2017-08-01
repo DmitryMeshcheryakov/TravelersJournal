@@ -57,12 +57,9 @@ public class EventViewPagerAdapter extends PagerAdapter {
 
         Log.i("IMAGE", mImagePath.get(position).getImagePath());
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        imageView.setOnClickListener(v -> {
 
 
-            }
         });
 
         container.addView(itemView);

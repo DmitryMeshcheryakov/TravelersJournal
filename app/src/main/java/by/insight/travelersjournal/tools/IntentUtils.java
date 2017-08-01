@@ -17,8 +17,7 @@ public class IntentUtils {
     }
 
     public static Intent addPhotoFromCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        return intent;
+        return new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     }
 
 }

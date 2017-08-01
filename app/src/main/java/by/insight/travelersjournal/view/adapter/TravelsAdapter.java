@@ -5,20 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import org.greenrobot.eventbus.EventBus;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import by.insight.travelersjournal.R;
 import by.insight.travelersjournal.model.Travel;
-import by.insight.travelersjournal.view.fragments.RecyclerViewTravelFragment;
 import io.realm.RealmResults;
 
 
@@ -40,11 +36,10 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
         this.mEditTravelsFragmentListener = editTravelsFragmentListener;
     }
 
-
     private OnItemTravelClickListener onItemClickListener;
 
     public interface OnItemTravelClickListener {
-        void onItemClick(String id);
+        void onItemTravelClick(String id);
     }
 
     public void setOnItemTravelClickListener(OnItemTravelClickListener onItemClickListener) {
@@ -78,12 +73,9 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
                 .load(mTravels.get(position).getImagePath())
                 .apply(mRequestOptions)
                 .into(holder.mImageTravel);
-        holder.mEditTravel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mEditTravelsFragmentListener != null)
-                    mEditTravelsFragmentListener.onEditTravels(mTravels.get(position).getId());
-            }
+        holder.mEditTravel.setOnClickListener(view -> {
+            if (mEditTravelsFragmentListener != null)
+                mEditTravelsFragmentListener.onEditTravels(mTravels.get(position).getId());
         });
 
     }
@@ -111,7 +103,7 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.TravelsV
         @Override
         public void onClick(View v) {
             Travel travel = mTravels.get(getAdapterPosition());
-            onItemClickListener.onItemClick(travel.getId());
+            onItemClickListener.onItemTravelClick(travel.getId());
         }
     }
 

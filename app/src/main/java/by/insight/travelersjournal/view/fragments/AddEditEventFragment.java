@@ -7,13 +7,10 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,8 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.util.ArrayList;
@@ -31,6 +26,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import CustomFonts.CustomCollapsingToolbarLayout;
+import CustomFonts.CustomTextEditInputLayout;
+import CustomFonts.CustomTextInputLayout;
+import CustomFonts.CustomTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -49,6 +48,7 @@ import io.realm.RealmList;
 
 import static by.insight.travelersjournal.tools.DateFormatter.convertTimeToString;
 import static by.insight.travelersjournal.tools.DialogFragmentUtils.getInstanceDialogFragment;
+import static by.insight.travelersjournal.tools.InitUtil.initToolbar;
 import static by.insight.travelersjournal.tools.IntentUtils.addImagesFromGallery;
 import static by.insight.travelersjournal.tools.IntentUtils.addPhotoFromCamera;
 import static by.insight.travelersjournal.tools.TextUtils.arrayDateKey;
@@ -60,35 +60,36 @@ import static by.insight.travelersjournal.tools.UtilsValidate.isDateValidate;
 
 public class AddEditEventFragment extends BaseFragment {
 
-    @BindView(R.id.title_event_TextInputLayout)
-    TextInputLayout mTitleEventTextInputLayout;
-
-    @BindView(R.id.description_event_TextInputLayout)
-    TextInputLayout mDescriptionsEventTextInputLayout;
-
-    @BindView(R.id.save_event_FAB)
-    FloatingActionButton mSaveEventFAB;
-
-    @BindView(R.id.number_day_event)
-    TextView mNumberDayEvent;
-
-    @BindView(R.id.month_and_year_event)
-    TextView mMonthAndYearEvent;
-
-    @BindView(R.id.day_of_the_week_event)
-    TextView mDayOfTheWeekEvent;
-
-    @BindView(R.id.time_event)
-    TextView mTimeEvent;
-
-    @BindView(R.id.event_ViewPager)
-    ViewPager mEventViewPager;
 
     @BindView(R.id.add_edit_event_toolbar)
-    Toolbar mToolbar;
-
+    Toolbar mAddEditEventToolbar;
+    @BindView(R.id.event_ViewPager)
+    ViewPager mEventViewPager;
     @BindView(R.id.add_edit_event_collapsing)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    CustomCollapsingToolbarLayout mAddEditEventCollapsing;
+    @BindView(R.id.add_edit_day_event_appbar)
+    AppBarLayout mAddEditDayEventAppbar;
+    @BindView(R.id.number_day_event)
+    CustomTextView mNumberDayEvent;
+    @BindView(R.id.day_of_the_week_event)
+    CustomTextView mDayOfTheWeekEvent;
+    @BindView(R.id.month_and_year_event)
+    CustomTextView mMonthAndYearEvent;
+    @BindView(R.id.time_event)
+    CustomTextView mTimeEvent;
+    @BindView(R.id.title_event_EditText)
+    CustomTextEditInputLayout mTitleEventEditText;
+    @BindView(R.id.title_event_TextInputLayout)
+    CustomTextInputLayout mTitleEventTextInputLayout;
+    @BindView(R.id.customTextEditInputLayout)
+    CustomTextEditInputLayout mCustomTextEditInputLayout;
+    @BindView(R.id.description_event_TextInputLayout)
+    CustomTextInputLayout mDescriptionEventTextInputLayout;
+    @BindView(R.id.nestedScrollView2)
+    NestedScrollView mNestedScrollView2;
+    @BindView(R.id.save_event_FAB)
+    FloatingActionButton mSaveEventFAB;
+    Unbinder unbinder;
 
     private boolean isTimeVal = false;
 
@@ -98,38 +99,18 @@ public class AddEditEventFragment extends BaseFragment {
 
     private Long mDate = new Date().getTime();
 
-    private Unbinder mUnbinder;
-
     private String mEventId;
 
     private UtilRealm mUtilRealm;
 
-    private OnAddEventClickListener mAddEventListener;
-
-    public interface OnAddEventClickListener {
-        void onAddEventClickListener(String title, String descriptions, Long date, String time, RealmList<ImageEvent> imagePath);
-    }
-
-    public void setAddEventClickListener(OnAddEventClickListener listener) {
-        this.mAddEventListener = listener;
-    }
-
-    private OnEditEventClickListener mEditEventClickListener;
-
-    public interface OnEditEventClickListener {
-        void onEditEventClickListener(String id, String title, String descriptions, Long date, String time, RealmList<ImageEvent> imagePath);
-    }
-
-    public void setEditEventClickListener(OnEditEventClickListener listener) {
-        this.mEditEventClickListener = listener;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_edit_event_fragment, container, false);
         setHasOptionsMenu(true);
-        mUnbinder = ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         init();
+        initToolbar(mAddEditEventToolbar, getActivity());
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             mEventId = bundle.getString(AppConstant.KEY_EVENT_ID);
@@ -143,10 +124,7 @@ public class AddEditEventFragment extends BaseFragment {
 
     private void init() {
         mUtilRealm = new UtilRealm();
-        mCollapsingToolbarLayout.setTitle(" ");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        mAddEditEventCollapsing.setTitle(" ");
         getCurrentDateAndTime(mDate);
     }
 
@@ -174,14 +152,15 @@ public class AddEditEventFragment extends BaseFragment {
             if (mAddEventListener != null) {
                 mAddEventListener.onAddEventClickListener(
                         textInputConvertString(mTitleEventTextInputLayout),
-                        textInputConvertString(mDescriptionsEventTextInputLayout),
+                        textInputConvertString(mDescriptionEventTextInputLayout),
                         mDate,
                         textViewConvertString(mTimeEvent),
                         mImageEvents);
             } else {
+
                 mEditEventClickListener.onEditEventClickListener(mEventId,
                         textInputConvertString(mTitleEventTextInputLayout),
-                        textInputConvertString(mDescriptionsEventTextInputLayout),
+                        textInputConvertString(mDescriptionEventTextInputLayout),
                         mDate,
                         textViewConvertString(mTimeEvent),
                         mImageEvents);
@@ -252,14 +231,11 @@ public class AddEditEventFragment extends BaseFragment {
     }
 
 
-    private DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
-            mDate = calendar.getTimeInMillis();
-            isTimeVal = true;
-            getCurrentDateAndTime(mDate);
-        }
+    private DatePickerDialog.OnDateSetListener onDateSetListener = (view, year, month, dayOfMonth) -> {
+        Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+        mDate = calendar.getTimeInMillis();
+        isTimeVal = true;
+        getCurrentDateAndTime(mDate);
     };
 
     private TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -270,16 +246,10 @@ public class AddEditEventFragment extends BaseFragment {
     };
 
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mUnbinder.unbind();
-    }
-
     private void showEvent(String id) {
         Event event = mUtilRealm.getEventById(id);
         mTitleEventTextInputLayout.getEditText().setText(event.getTitle());
-        mDescriptionsEventTextInputLayout.getEditText().setText(event.getDescriptions());
+        mDescriptionEventTextInputLayout.getEditText().setText(event.getDescriptions());
         getCurrentDateAndTime(event.getDate());
         RealmList<ImageEvent> imageEvents = mUtilRealm.getEventById(mEventId).getImageEvent();
         mEventViewPager.setAdapter(new EventViewPagerAdapter(getContext(), imageEvents));
@@ -310,5 +280,13 @@ public class AddEditEventFragment extends BaseFragment {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+
     }
 }

@@ -32,6 +32,8 @@ public class AppConstant {
 
     public static final String KEY_TRAVEL_ID = "Travel_ID";
 
+    public static final String KEY_DAY_EVENT_ID = "Day_event_ID";
+
     public static final  String IMAGES = "image/*";
 
 }

@@ -10,6 +10,11 @@ public interface RealmTable {
         String IMAGE_PATH = "image_path";
     }
 
+    interface DayEvent {
+        String NUMBER_DAY = "number_day";
+        String DESCRIPTIONS = "descriptions";
+    }
+
     interface Event {
         String TITLE = "title";
         String DESCRIPTIONS = "descriptions";
@@ -17,8 +22,7 @@ public interface RealmTable {
         String TIME = "time";
     }
 
-    interface ImageEvent
-    {
+    interface ImageEvent {
         String IMAGE_PATH = "image_path";
     }
 }
