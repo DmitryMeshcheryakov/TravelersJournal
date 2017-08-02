@@ -83,26 +83,16 @@
                     android:textColor="@android:color/black"/>
             </CustomFonts.CustomTextInputLayout>
 
-            <CustomFonts.CustomTextInputLayout
-                android:id="@+id/add_edit_number_day_event_TextInputLayout"
-                android:layout_width="200dp"
+            <biz.borealis.numberpicker.NumberPicker
+                android:id="@+id/np_day_event"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/add_edit_description_day_event_TextInputLayout"
                 android:layout_centerHorizontal="true"
-                android:textColorHint="@color/colorAccent"
-                android:layout_below="@id/add_edit_description_day_event_TextInputLayout"
-                >
-
-                <CustomFonts.CustomTextEditInputLayout
-                    android:id="@+id/add_edit_numaber_day_event_EditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edit_text_design"
-                    android:gravity="center"
-                    android:hint="Number Day"
-                    android:inputType="number"
-                    android:textColor="@android:color/black"/>
-            </CustomFonts.CustomTextInputLayout>
+                app:np_text_size_selected="40sp"
+                app:np_animate_text_size = "true"
+                app:np_text_color_selected = "@android:color/holo_red_dark"
+                android:layout_marginTop="20dp"></biz.borealis.numberpicker.NumberPicker>
 
 
         </RelativeLayout>

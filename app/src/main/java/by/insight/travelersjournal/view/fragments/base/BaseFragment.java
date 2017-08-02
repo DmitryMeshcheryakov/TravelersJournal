@@ -13,8 +13,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Toast;
 
+import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.mikepenz.itemanimators.ScaleUpAnimator;
 
 import org.reactivestreams.Subscription;
@@ -172,5 +174,14 @@ public class BaseFragment extends Fragment {
         mEditDayEventFragmentListener = null;
         mAddDayEventFragmentListener = null;
         mAddDayEventListener = null;
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (enter) {
+            return MoveAnimation.create(MoveAnimation.RIGHT, enter, 250);
+        } else {
+            return MoveAnimation.create(MoveAnimation.LEFT, enter, 250);
+        }
     }
 }

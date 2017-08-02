@@ -3,10 +3,12 @@ package by.insight.travelersjournal.view.fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -53,7 +55,9 @@ import io.realm.RealmList;
 import static by.insight.travelersjournal.tools.DateFormatter.convertTimeToString;
 import static by.insight.travelersjournal.tools.DialogFragmentUtils.getInstanceDialogFragment;
 import static by.insight.travelersjournal.tools.InitUtil.initToolbar;
+import static by.insight.travelersjournal.tools.IntentUtils.addImagesFromGallery;
 import static by.insight.travelersjournal.tools.IntentUtils.addPhotoFromCamera;
+import static by.insight.travelersjournal.tools.SDUtils.getRealPathFromUri;
 import static by.insight.travelersjournal.tools.TextUtils.arrayDateKey;
 import static by.insight.travelersjournal.tools.TextUtils.textInputConvertString;
 import static by.insight.travelersjournal.tools.TextUtils.textViewConvertString;
@@ -92,6 +96,7 @@ public class AddEditEventFragment extends BaseFragment {
     NestedScrollView mNestedScrollView2;
     @BindView(R.id.save_event_FAB)
     FloatingActionButton mSaveEventFAB;
+
     Unbinder unbinder;
 
     private boolean isTimeVal = false;
@@ -199,40 +204,28 @@ public class AddEditEventFragment extends BaseFragment {
                 ImageEvent mImageEvent = new ImageEvent();
                 mImageEvent.setImagePath(path);
                 mImageEvents.add(mImageEvent);
-
-
             }
             case AppConstant.REQEST_GALLERY: {
 
-//                ClipData clipData = data.getClipData();
-//
-//                if (clipData != null) {
-//                    for (int i = 0; i < clipData.getItemCount(); i++) {
-//                        ClipData.Item item = clipData.getItemAt(i);
-//                        Uri uri = item.getUri();
-//                        String path = getPath(getContext(), uri);
-//                        imagePath.add(path);
-//                        ImageEvent mImageEvent = new ImageEvent();
-//                        mImageEvent.setImagePath(path);
-//
-//                        mImageEvents.add(mImageEvent);
-//
-//                    }
-//                }
+                ClipData clipData = data.getClipData();
 
+                if (clipData != null) {
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        ClipData.Item item = clipData.getItemAt(i);
+                        Uri uri = item.getUri();
+                        String path = getPath(getContext(), uri);
+                        imagePath.add(path);
+                        ImageEvent mImageEvent = new ImageEvent();
+                        mImageEvent.setImagePath(path);
 
-               for(String realPath :  Matisse.obtainPathResult(data)) {
-                   imagePath.add(realPath);
-                   ImageEvent mImageEvent = new ImageEvent();
-                   mImageEvent.setImagePath(realPath);
+                        mImageEvents.add(mImageEvent);
 
-                   mImageEvents.add(mImageEvent);
-               }
+                    }
+                }
 
                 showImagesEvents(mImageEvents);
+
             }
-
-
         }
 
     }
@@ -264,7 +257,7 @@ public class AddEditEventFragment extends BaseFragment {
         mDescriptionEventTextInputLayout.getEditText().setText(event.getDescriptions());
         getCurrentDateAndTime(event.getDate());
         RealmList<ImageEvent> imageEvents = mUtilRealm.getEventById(mEventId).getImageEvent();
-        mEventViewPager.setAdapter(new EventViewPagerAdapter(getContext(), imageEvents));
+        showImagesEvents(imageEvents);
     }
 
     @Override
@@ -278,16 +271,8 @@ public class AddEditEventFragment extends BaseFragment {
 
         switch (item.getItemId()) {
             case R.id.add_PhotoGallery_btn: {
-//                startActivityForResult(Intent.createChooser
-//                        (addImagesFromGallery(), "Select Pictures"), AppConstant.REQEST_GALLERY);
-                Matisse.from(getActivity())
-                        .choose(MimeType.of(MimeType.JPEG, MimeType.PNG))
-                        .countable(true)
-                        .maxSelectable(9)
-                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                        .thumbnailScale(0.85f)
-                        .imageEngine(new GlideEngine())
-                        .forResult(AppConstant.REQEST_GALLERY);
+                startActivityForResult(Intent.createChooser
+                        (addImagesFromGallery(), "Select Pictures"), AppConstant.REQEST_GALLERY);
                 return true;
             }
             case R.id.add_PhotoCamera_btn: {

@@ -9,7 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
+
+import com.labo.kaji.fragmentanimations.CubeAnimation;
+import com.labo.kaji.fragmentanimations.MoveAnimation;
 
 import CustomFonts.CustomCollapsingToolbarLayout;
 import butterknife.BindView;
@@ -60,7 +64,7 @@ public class RecyclerViewTravelFragment extends BaseFragment {
         showTravels(mUtilRealm.getAllTravels());
         initToolbar(mRecyclerViewTravelToolbar, getActivity());
         initRecyclerListenerTravel(mRecyclerViewTravels, mAdapter, mUtilRealm, mTravelRealmResults, getContext());
-
+       mRecyclerViewTravelAppbar.setExpanded(false);
         return view;
 
     }
@@ -98,4 +102,5 @@ public class RecyclerViewTravelFragment extends BaseFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
 }

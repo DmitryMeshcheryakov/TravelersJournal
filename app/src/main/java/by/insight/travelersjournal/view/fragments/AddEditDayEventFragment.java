@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import CustomFonts.CustomCollapsingToolbarLayout;
 import CustomFonts.CustomTextEditInputLayout;
 import CustomFonts.CustomTextInputLayout;
+import biz.borealis.numberpicker.NumberPicker;
+import biz.borealis.numberpicker.OnValueChangeListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,10 +45,13 @@ public class AddEditDayEventFragment extends BaseFragment {
     CustomTextEditInputLayout mAddEditDescriptionDayEventEditText;
     @BindView(R.id.add_edit_description_day_event_TextInputLayout)
     CustomTextInputLayout mAddEditDescriptionDayEventTextInputLayout;
-    @BindView(R.id.add_edit_numaber_day_event_EditText)
-    CustomTextEditInputLayout mAddEditNumaberDayEventEditText;
-    @BindView(R.id.add_edit_number_day_event_TextInputLayout)
-    CustomTextInputLayout mAddEditNumberDayEventTextInputLayout;
+//    @BindView(R.id.add_edit_numaber_day_event_EditText)
+//    CustomTextEditInputLayout mAddEditNumaberDayEventEditText;
+//    @BindView(R.id.add_edit_number_day_event_TextInputLayout)
+//    CustomTextInputLayout mAddEditNumberDayEventTextInputLayout;
+    @BindView(R.id.np_day_event)
+    NumberPicker mNumberPicker;
+    private int numberDay;
     Unbinder unbinder;
 
     @Nullable
@@ -55,18 +60,20 @@ public class AddEditDayEventFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.add_edit_day_event_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         initToolbar(mAddEditDayEventToolbar, getActivity());
+        mAddEditDayEventAppbar.setExpanded(false);
+        mNumberPicker.setOnValueChangeListener(newValue -> numberDay = newValue);
         return view;
     }
 
     @OnClick(R.id.add_edit_day_event_FAB)
     public void OnClickSave() {
-        if (isInfoValidate(mAddEditNumberDayEventTextInputLayout)) {
+        if (numberDay > 1) {
 
             hideTheKeyboard(getActivity(), getView());
             if (mAddDayEventListener != null) {
 
                 mAddDayEventListener.onAddDayEventClickListener(
-                        textInputConvertString(mAddEditNumberDayEventTextInputLayout),
+                        String.valueOf(numberDay),
                         textInputConvertString(mAddEditDescriptionDayEventTextInputLayout));
             } else {
 //                mOnEditTravelClickListener.onEditTravelClickListener(travelId,

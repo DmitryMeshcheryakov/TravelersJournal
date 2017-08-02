@@ -8,7 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.RelativeLayout;
+
+import com.labo.kaji.fragmentanimations.CubeAnimation;
+import com.labo.kaji.fragmentanimations.MoveAnimation;
 
 import CustomFonts.CustomTextView;
 import butterknife.BindView;
@@ -85,4 +89,5 @@ public class RecyclerViewDayEventFragment extends BaseFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
 }

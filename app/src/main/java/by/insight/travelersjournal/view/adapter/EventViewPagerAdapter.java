@@ -55,8 +55,6 @@ public class EventViewPagerAdapter extends PagerAdapter {
                 .load(mImagePath.get(position).getImagePath())
                 .into(imageView);
 
-        Log.i("IMAGE", mImagePath.get(position).getImagePath());
-
         imageView.setOnClickListener(v -> {
 
 
