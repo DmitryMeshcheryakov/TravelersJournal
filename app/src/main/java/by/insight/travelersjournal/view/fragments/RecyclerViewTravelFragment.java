@@ -64,7 +64,7 @@ public class RecyclerViewTravelFragment extends BaseFragment {
         showTravels(mUtilRealm.getAllTravels());
         initToolbar(mRecyclerViewTravelToolbar, getActivity());
         initRecyclerListenerTravel(mRecyclerViewTravels, mAdapter, mUtilRealm, mTravelRealmResults, getContext());
-       mRecyclerViewTravelAppbar.setExpanded(false);
+        mRecyclerViewTravelAppbar.setExpanded(false);
         return view;
 
     }
